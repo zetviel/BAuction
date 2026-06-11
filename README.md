@@ -1,4 +1,4 @@
-# BAuction - Compilation Guide
+# BAuction (1.16.x-1.21.x) - Compilation Guide
 
 ## Prerequisites
 Before compiling BAuction, ensure you have the following prerequisites installed on your system:
