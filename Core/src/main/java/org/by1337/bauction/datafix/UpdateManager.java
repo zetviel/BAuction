@@ -14,6 +14,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -69,7 +71,7 @@ public class UpdateManager {
             makeDataFolderAsOld();
             new MessagesUpdater().update();
             config.set("allow-buy-count", true);
-            config.set("black-list", List.of("debug_stick"));
+            config.set("black-list", Collections.singletonList("debug_stick"));
             version++;
             run(version, config);
         } else if (version == 4) {
@@ -109,7 +111,7 @@ public class UpdateManager {
                 File home = Main.getInstance().getDataFolder();
                 File folder = new File(home, "_old");
                 folder.mkdirs();
-                for (String file : List.of("buyCount.yml", "confirm.yml", "itemsForSale.yml", "main.yml", "playerItemsView.yml", "unsoldItemList.yml")) {
+                for (String file : Arrays.asList("buyCount.yml", "confirm.yml", "itemsForSale.yml", "main.yml", "playerItemsView.yml", "unsoldItemList.yml")) {
                     File cfg = new File(home, file);
                     if (cfg.exists()) {
                         Files.move(cfg.toPath(), new File(folder, file).toPath(), StandardCopyOption.REPLACE_EXISTING);

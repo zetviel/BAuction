@@ -39,14 +39,14 @@ public class Config {
         sortingMap = new LinkedHashMap<>();
         categoryMap = new LinkedHashMap<>();
         try {
-            var sortMap = sorting.getMap("sorting", Sorting.class);
+            Map<?, Sorting> sortMap = sorting.getMap("sorting", Sorting.class);
             if (sortMap != null) {
                 sortMap.values().stream().sorted(Sorting::compareTo).forEach(sorting1 -> sortingMap.put(sorting1.nameKey(), sorting1));
             }
         } catch (Throwable ignored) {
         }
         try {
-            var catMap = sorting.getMap("categories", Category.class);
+            Map<?, Category> catMap = sorting.getMap("categories", Category.class);
             if (catMap != null) {
                 catMap.values().stream().sorted(Category::compareTo).forEach(category -> categoryMap.put(category.nameKey(), category));
             }

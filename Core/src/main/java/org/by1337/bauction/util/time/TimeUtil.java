@@ -3,6 +3,7 @@ package org.by1337.bauction.util.time;
 import org.by1337.blib.configuration.YamlContext;
 import org.by1337.bauction.Main;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +29,7 @@ public class TimeUtil {
         map.put("time-format.just-now", context.getAsString("time-format.just-now"));
         map.put("time-format.never", context.getAsString("time-format.never"));
 
-        for (String format : List.of("formats", "years", "months", "days", "hours", "minutes", "seconds")) {
+        for (String format : Arrays.asList("formats", "years", "months", "days", "hours", "minutes", "seconds")) {
             for (Map.Entry<String, String> entry : context.getMap("time-format." + format, String.class).entrySet()) {
                 map.put("time-format." + format + "." + entry.getKey(), entry.getValue());
             }

@@ -28,8 +28,8 @@ public class UnsoldItemsMenu extends Menu {
         if (setting.getCache() == null) {
             cache = new Cache();
             setting.setCache(cache);
-        } else if (setting.getCache() instanceof Cache cache0) {
-            this.cache = cache0;
+        } else if (setting.getCache() instanceof Cache) {
+            this.cache = (Cache) setting.getCache();
         } else {
             if (!seenIllegalCash) {
                 Main.getMessage().error("Illegal cache type '%s'! Excepted %s", setting.getCache().getClass(), Cache.class);

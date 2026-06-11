@@ -74,7 +74,7 @@ public class MenuSetting {
     }
 
     public Menu create(Player player, @Nullable Menu backMenu) {
-        var creator = MenuProviderRegistry.getByName(provider);
+        MenuProviderRegistry.MenuCreator creator = MenuProviderRegistry.getByName(provider);
         if (creator == null) {
             throw new IllegalStateException("unknown provider " + provider);
         }

@@ -36,7 +36,8 @@ public class CUniqueName implements UniqueName {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof CUniqueName that)) return false;
+        if (!(o instanceof CUniqueName)) return false;
+        CUniqueName that = (CUniqueName) o;
         return key.equals(that.key);
     }
 

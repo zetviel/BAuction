@@ -11,6 +11,7 @@ import org.by1337.blib.command.CommandException;
 import org.by1337.blib.command.argument.ArgumentMap;
 import org.by1337.blib.command.argument.ArgumentStrings;
 import org.by1337.blib.command.requires.RequiresPermission;
+import org.by1337.bmenu.menu.*;
 import org.by1337.bmenu.menu.MenuLoader;
 
 import java.util.*;
@@ -46,11 +47,12 @@ public class SearchCmd extends Command<CommandSender> {
         custom.setSoft(soft);
         custom.setTags(new HashSet<>(tags));
 
-        var menu = menuLoader.getMenu(homeMenuId);
+        MenuSetting menu = menuLoader.getMenu(homeMenuId);
         Objects.requireNonNull(menu, "Menu " + homeMenuId + " not found!");
-        var m = menu.create(player, null);
+        Menu m = menu.create(player, null);
 
-        if (m instanceof HomeMenu homeMenu0){
+        if (m instanceof HomeMenu){
+            HomeMenu homeMenu0 = (HomeMenu) m;
             homeMenu0.setCustom(custom);
             homeMenu0.getCategories().add(custom);
             Collections.sort(homeMenu0.getCategories());

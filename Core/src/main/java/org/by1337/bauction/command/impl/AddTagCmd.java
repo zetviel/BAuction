@@ -15,6 +15,7 @@ import org.by1337.blib.command.argument.ArgumentMap;
 import org.by1337.blib.command.argument.ArgumentString;
 import org.by1337.blib.command.requires.RequiresPermission;
 
+import java.util.Collections;
 import java.util.List;
 
 public class AddTagCmd extends Command<CommandSender> {
@@ -22,8 +23,8 @@ public class AddTagCmd extends Command<CommandSender> {
         super(command);
         requires(new RequiresPermission<>("bauc.admin.addTag"));
         requires(sender -> sender instanceof Player);
-        argument(new ArgumentString<>("key", List.of("[tag key]")));
-        argument(new ArgumentString<>("value", List.of("[tag value]")));
+        argument(new ArgumentString<>("key", Collections.singletonList("[tag key]")));
+        argument(new ArgumentString<>("value", Collections.singletonList("[tag value]")));
         executor(this::execute);
     }
 

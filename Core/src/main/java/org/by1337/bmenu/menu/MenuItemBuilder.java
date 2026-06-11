@@ -132,7 +132,11 @@ public class MenuItemBuilder implements Comparable<MenuItemBuilder> {
             im.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         }
         if (hideEffects) {
-            im.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
+            try {
+                im.addItemFlags(ItemFlag.valueOf("HIDE_STORED_ENCHANTS"));
+            } catch (IllegalArgumentException e) {
+                im.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
+            }
         }
         if (hideUnbreakable) {
             im.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);

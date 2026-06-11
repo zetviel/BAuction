@@ -27,8 +27,8 @@ public class ItemsForSaleMenu extends Menu {
         if (setting.getCache() == null) {
             cash = new Cash();
             setting.setCache(cash);
-        } else if (setting.getCache() instanceof Cash cash0) {
-            this.cash = cash0;
+        } else if (setting.getCache() instanceof Cash) {
+            this.cash = (Cash) setting.getCache();
         } else {
             if (!seenIllegalCash) {
                 Main.getMessage().error("Illegal cache type '%s'! Excepted %s", setting.getCache().getClass(), Cash.class);

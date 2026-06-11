@@ -91,7 +91,7 @@ public abstract class Menu extends AsyncClickListener {
         currentItems.clear();
         matrix.clear();
         generate();
-        currentItems = new ArrayList<>(items.stream().map(m -> m.build(this)).filter(Objects::nonNull).toList());
+        currentItems = new ArrayList<>(items.stream().map(m -> m.build(this)).filter(Objects::nonNull).collect(java.util.stream.Collectors.toList()));
         setItems(currentItems);
         setItems(customItems);
         sendFakeTitle(replace(title));
@@ -156,7 +156,7 @@ public abstract class Menu extends AsyncClickListener {
 
     @Nullable
     protected MenuItem findItemInSlot(int slot) {
-        var item = findItemInSlot(slot, customItems);
+        MenuItem item = findItemInSlot(slot, customItems);
         return item == null ? findItemInSlot(slot, currentItems) : item;
     }
 
@@ -218,8 +218,8 @@ public abstract class Menu extends AsyncClickListener {
                 ListNBT listNBT = (ListNBT) NBTParser.parseList(rawNBT);
                 List<String> list = new ArrayList<>();
                 for (NBT nbt : listNBT) {
-                    if (nbt instanceof StringNBT stringNBT) {
-                        list.add(stringNBT.getValue());
+                    if (nbt instanceof StringNBT) {
+                        list.add(((StringNBT) nbt).getValue());
                     } else {
                         throw new IllegalArgumentException(String.format("Input: '%s' expected StringNBT", nbt));
                     }
@@ -250,7 +250,7 @@ public abstract class Menu extends AsyncClickListener {
                 )
         );
         commands.addSubCommand(new Command<Menu>("[SOUND]")
-                .argument(new ArgumentEnumValue<>("sound", Sound.class))
+                .argument(new ArgumentString<>("sound"))
                 .argument(new ArgumentFloat<>("volume"))
                 .argument(new ArgumentFloat<>("pitch"))
                 .executor((v, args) -> {
@@ -298,7 +298,7 @@ public abstract class Menu extends AsyncClickListener {
         commands.addSubCommand(new Command<Menu>("[BACK]")
                 .argument(new ArgumentStrings<>("commands"))
                 .executor((v, args) -> {
-                    var m = Objects.requireNonNull(v.previousMenu, "does not have a previous menu!");
+                    Menu m = Objects.requireNonNull(v.previousMenu, "does not have a previous menu!");
                     m.reopen();
                     runIn((String) args.get("commands"), m);
                 })
@@ -319,11 +319,11 @@ public abstract class Menu extends AsyncClickListener {
                 .argument(new ArgumentStrings<>("commands"))
                 .executor((v, args) -> {
                             String menu = (String) args.getOrThrow("menu", "User [OPEN_MENU] <menu id>");
-                            var settings = v.menuLoader.getMenu(menu);
+                            MenuSetting settings = v.menuLoader.getMenu(menu);
                             if (settings == null) {
                                 throw new CommandException("Unknown menu %s", menu);
                             }
-                            var m = settings.create(v.viewer, v);
+                            Menu m = settings.create(v.viewer, v);
                             m.open();
                             runIn((String) args.get("commands"), m);
                         }
@@ -395,8 +395,8 @@ public abstract class Menu extends AsyncClickListener {
                                     Main.getMessage().error("Unknown sell item %s!", args.get("id"));
                                     return;
                                 }
-                            } else if (v.lastClickedItem != null && v.lastClickedItem.getData() instanceof SellItem s) {
-                                sellItem = s;
+                            } else if (v.lastClickedItem != null && v.lastClickedItem.getData() instanceof SellItem) {
+                                sellItem = (SellItem) v.lastClickedItem.getData();
                             } else {
                                 Main.getMessage().error("[REMOVE_SELL_ITEM] The command does not specify an id which means that I will expect the item clicked by the player to be a SellItem! Last click %s", v.lastClickedItem);
                                 return;
@@ -412,7 +412,8 @@ public abstract class Menu extends AsyncClickListener {
                             while (!(menu instanceof SelectCountMenu) && menu != null) {
                                 menu = menu.previousMenu;
                             }
-                            if (menu instanceof SelectCountMenu selectCountMenu) {
+                            if (menu instanceof SelectCountMenu) {
+                                SelectCountMenu selectCountMenu = (SelectCountMenu) menu;
                                 int count = selectCountMenu.getCount();
                                 SellItem sellItem = selectCountMenu.getSellItem();
                                 BuyItemCountProcess buyItemCount = new BuyItemCountProcess(selectCountMenu, sellItem, count);

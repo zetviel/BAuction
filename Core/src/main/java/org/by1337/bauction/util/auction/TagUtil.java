@@ -65,7 +65,8 @@ public class TagUtil {
         list.addAll(getTags(material));
 
         if (im != null) {
-            if (im instanceof PotionMeta potionMeta) {
+            if (im instanceof PotionMeta) {
+                PotionMeta potionMeta = (PotionMeta) im;
                 potionMeta.getCustomEffects().forEach(potionEffect -> {
                     list.add(potionEffect.getType().getName());
                     list.add(potionEffect.getType().getName() + ":" + potionEffect.getAmplifier());
@@ -76,7 +77,8 @@ public class TagUtil {
                 }
             }
             list.addAll(parseTags(im.getPersistentDataContainer()));
-            if (im instanceof EnchantmentStorageMeta enchantmentStorageMeta) {
+            if (im instanceof EnchantmentStorageMeta) {
+                EnchantmentStorageMeta enchantmentStorageMeta = (EnchantmentStorageMeta) im;
                 enchantmentStorageMeta.getStoredEnchants().keySet().forEach(e -> list.add(e.getKey().getKey()));
             }
         }

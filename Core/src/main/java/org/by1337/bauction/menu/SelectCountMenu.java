@@ -11,10 +11,7 @@ import org.by1337.blib.chat.placeholder.Placeholder;
 import org.by1337.blib.command.Command;
 import org.by1337.blib.command.CommandException;
 import org.by1337.blib.command.argument.ArgumentInteger;
-import org.by1337.bmenu.menu.Menu;
-import org.by1337.bmenu.menu.MenuItemBuilder;
-import org.by1337.bmenu.menu.MenuLoader;
-import org.by1337.bmenu.menu.MenuSetting;
+import org.by1337.bmenu.menu.*;
 import org.jetbrains.annotations.Nullable;
 
 public class SelectCountMenu extends Menu implements ItemHolder {
@@ -29,8 +26,8 @@ public class SelectCountMenu extends Menu implements ItemHolder {
         if (setting.getCache() == null) {
             cache = new Cache();
             setting.setCache(cache);
-        } else if (setting.getCache() instanceof Cache cache0) {
-            this.cache = cache0;
+        } else if (setting.getCache() instanceof Cache) {
+            this.cache = (Cache) setting.getCache();
         } else {
             if (!seenIllegalCash) {
                 Main.getMessage().error("Illegal cache type '%s'! Excepted %s", setting.getCache().getClass(), Cache.class);
@@ -40,8 +37,8 @@ public class SelectCountMenu extends Menu implements ItemHolder {
         }
         if (previousMenu != null) {
             if (previousMenu.getLastClickedItem() != null) {
-                if (previousMenu.getLastClickedItem().getData() instanceof SellItem sellItem0) {
-                    sellItem = sellItem0;
+                if (previousMenu.getLastClickedItem().getData() instanceof SellItem) {
+                    sellItem = (SellItem) previousMenu.getLastClickedItem().getData();
                     registerPlaceholders(sellItem);
                     registerPlaceholder("{count}", () -> count);
                     registerPlaceholder("{price_count}", () -> NumberUtil.format(sellItem.getPriceForOne() * count));
@@ -62,7 +59,7 @@ public class SelectCountMenu extends Menu implements ItemHolder {
     @Override
     protected void generate() {
         customItems.clear();
-        var item = cache.getItem().build(this, sellItem.getItemStack());
+        MenuItem item = cache.getItem().build(this, sellItem.getItemStack());
         item.getItemStack().setAmount(count);
         customItems.add(item);
     }
@@ -89,7 +86,7 @@ public class SelectCountMenu extends Menu implements ItemHolder {
         if (sellItem == null) {
             return new ItemStack(Material.JIGSAW);
         }
-        var item = sellItem.getItemStack();
+        ItemStack item = sellItem.getItemStack();
         item.setAmount(count);
         return item;
     }

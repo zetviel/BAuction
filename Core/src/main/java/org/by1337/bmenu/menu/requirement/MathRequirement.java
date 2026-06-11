@@ -20,7 +20,7 @@ public class MathRequirement implements Requirement {
 
     @Override
     public boolean test(Placeholderable placeholderable, Player clicker) {
-        var b = MathParser.mathSave("math[" + placeholderable.replace(expression) + "]").equals("1");
+        boolean b = MathParser.mathSave("math[" + placeholderable.replace(expression) + "]").equals("1");
         return not ? !b : b;
     }
 

@@ -44,10 +44,12 @@ import org.by1337.blib.chat.util.Message;
 import org.by1337.blib.command.Command;
 import org.by1337.blib.command.CommandException;
 import org.by1337.blib.command.requires.RequiresPermission;
+import org.by1337.blib.configuration.YamlConfig;
 import org.by1337.blib.configuration.YamlContext;
 import org.by1337.blib.configuration.adapter.AdapterRegistry;
 import org.by1337.blib.configuration.adapter.impl.primitive.AdapterEnum;
 import org.by1337.bmenu.BMenuApi;
+import org.by1337.bmenu.menu.*;
 import org.by1337.bmenu.menu.MenuLoader;
 import org.by1337.bmenu.menu.MenuProviderRegistry;
 import org.jetbrains.annotations.NotNull;
@@ -128,7 +130,7 @@ public final class Main extends JavaPlugin {
         enablePipeline.enable("registerAdapters", this::registerAdapters);
 
         enablePipeline.enable("load UniqueNameGenerator", () -> {
-            var cfg = ConfigUtil.load("dbCfg.yml");
+            YamlConfig cfg = ConfigUtil.load("dbCfg.yml");
             int seed = cfg.getAsInteger("name-generator.last-seed");
             uniqueNameGenerator = new UniqueNameGenerator(++seed);
             cfg.set("name-generator.last-seed", seed);
@@ -346,9 +348,10 @@ public final class Main extends JavaPlugin {
                 .addSubCommand(new SearchCmd("search", menuLoader, cfg.getHomeMenu()))
                 .addSubCommand(new ViewCommand("view", menuLoader, cfg.getPlayerItemsViewMenu()))
                 .executor(((sender, args) -> {
-                    if (!(sender instanceof Player player))
+                    if (!(sender instanceof Player))
                         throw new CommandException(Lang.getMessage("must_be_player"));
-                    var menu = menuLoader.getMenu(cfg.getHomeMenu());
+                    Player player = (Player) sender;
+                    MenuSetting menu = menuLoader.getMenu(cfg.getHomeMenu());
                     Objects.requireNonNull(menu, "Menu " + cfg.getHomeMenu() + " not found!");
                     menu.create(player, null).open();
                 }))
@@ -380,7 +383,7 @@ public final class Main extends JavaPlugin {
                             return Collections.singletonList(Lang.getMessage("search-type"));
                         }
                     }
-                    return List.of(Lang.getMessage("start_entering_item_name"));
+                    return Collections.singletonList(Lang.getMessage("start_entering_item_name"));
                 }
                 return trieManager.getTrie().getAllKeysWithPrefix(last);
             }
@@ -397,7 +400,7 @@ public final class Main extends JavaPlugin {
         if (path.startsWith("/")) {
             path = path.substring(1);
         }
-        var f = new File(getDataFolder(), path);
+        File f = new File(getDataFolder(), path);
         if (!f.exists()) {
             saveResourceWithFallback(path, false);
         }
@@ -429,13 +432,13 @@ public final class Main extends JavaPlugin {
         toPath = toPath.replace('\\', '/');
         if (resourcePath.startsWith("/")) resourcePath = resourcePath.substring(1);
         if (toPath.startsWith("/")) toPath = toPath.substring(1);
-        var outFile = new File(getDataFolder(), toPath);
-        var parent = outFile.getParentFile();
+        File outFile = new File(getDataFolder(), toPath);
+        File parent = outFile.getParentFile();
         if (parent != null) parent.mkdirs();
         if (outFile.exists() && !replace) return;
-        var in = getResource(resourcePath);
+        java.io.InputStream in = getResource(resourcePath);
         if (in == null) throw new IllegalArgumentException("Resource not found: " + resourcePath);
-        try (var input = in; var output = new java.io.FileOutputStream(outFile)) {
+        try (java.io.InputStream input = in; java.io.FileOutputStream output = new java.io.FileOutputStream(outFile)) {
             byte[] buffer = new byte[8192];
             int len;
             while ((len = input.read(buffer)) > 0) {

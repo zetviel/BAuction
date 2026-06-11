@@ -8,6 +8,8 @@ import org.by1337.blib.command.argument.ArgumentIntegerAllowedMath;
 import org.by1337.blib.command.argument.ArgumentSetList;
 import org.by1337.bauction.Main;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class ArgumentFullOrCount extends Argument<CommandSender> {
@@ -22,9 +24,9 @@ public class ArgumentFullOrCount extends Argument<CommandSender> {
     @Override
     public List<String> tabCompleter(CommandSender sender, String str) throws CommandSyntaxError {
         if (Main.getCfg().isAllowBuyCount()) {
-            if (str.isEmpty()) return List.of("full", "64");
-            if (str.startsWith("f")) return List.of("full");
-        } else if (str.isEmpty()) return List.of("64");
+            if (str.isEmpty()) return Arrays.asList("full", "64");
+            if (str.startsWith("f")) return Collections.singletonList("full");
+        } else if (str.isEmpty()) return Collections.singletonList("64");
         return argumentInteger.tabCompleter(sender, str);
     }
 

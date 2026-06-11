@@ -18,6 +18,7 @@ import org.by1337.blib.command.argument.ArgumentIntegerAllowedMath;
 import org.by1337.blib.command.argument.ArgumentMap;
 import org.by1337.blib.command.requires.RequiresPermission;
 
+import java.util.Collections;
 import java.util.List;
 
 public class SellCmd  extends Command<CommandSender> {
@@ -25,7 +26,7 @@ public class SellCmd  extends Command<CommandSender> {
         super(command);
         requires(new RequiresPermission<>("bauc.sell"));
         requires(sender -> sender instanceof Player);
-        argument(new ArgumentIntegerAllowedMath<>("price", List.of(Lang.getMessage("price_tag")),
+        argument(new ArgumentIntegerAllowedMath<>("price", Collections.singletonList(Lang.getMessage("price_tag")),
                 Main.getCfg().getConfig().getAsInteger("offer-min-price", 1),
                 Main.getCfg().getConfig().getAsInteger("offer-max-price", Integer.MAX_VALUE)
         ));

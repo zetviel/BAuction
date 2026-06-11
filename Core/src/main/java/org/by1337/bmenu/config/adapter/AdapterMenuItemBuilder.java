@@ -46,7 +46,7 @@ public class AdapterMenuItemBuilder implements ClassAdapter<MenuItemBuilder> {
             int duration = Integer.parseInt(args[1]);
             int amplifier = Integer.parseInt(args[2]);
             return new PotionEffect(type, duration, amplifier);
-        }).filter(Objects::nonNull).toList();
+        }).filter(Objects::nonNull).collect(java.util.stream.Collectors.toList());
 
         Color color = context.getAs("hex", Color.class, null);
 
@@ -60,7 +60,7 @@ public class AdapterMenuItemBuilder implements ClassAdapter<MenuItemBuilder> {
                     int level = Integer.parseInt(args[1]);
                     return new EnchantmentBuilder(level, type);
                 }
-        ).filter(Objects::nonNull).toList();
+        ).filter(Objects::nonNull).collect(java.util.stream.Collectors.toList());
 
         boolean hideEnchantments = context.getAsBoolean("hide_enchantments", false);
         boolean hideAttributes = context.getAsBoolean("hide_attributes", false);
@@ -113,7 +113,7 @@ public class AdapterMenuItemBuilder implements ClassAdapter<MenuItemBuilder> {
     }
 
     public Requirements anyClickRequirementDeserialize(YamlContext context) {
-        List<Requirement> requirementList = context.getMap("requirements", Requirement.class, new HashMap<>()).values().stream().toList();
+        List<Requirement> requirementList = context.getMap("requirements", Requirement.class, new HashMap<>()).values().stream().collect(java.util.stream.Collectors.toList());
         List<String> denyCommands = Collections.unmodifiableList(context.getList("commands", String.class, new ArrayList<>()));
         return new Requirements(requirementList, denyCommands);
     }

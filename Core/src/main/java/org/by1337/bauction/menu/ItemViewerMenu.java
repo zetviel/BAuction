@@ -6,10 +6,7 @@ import org.by1337.bauction.Main;
 import org.by1337.bauction.api.auc.ItemHolder;
 import org.by1337.blib.chat.placeholder.Placeholder;
 import org.by1337.blib.command.CommandException;
-import org.by1337.bmenu.menu.Menu;
-import org.by1337.bmenu.menu.MenuItemBuilder;
-import org.by1337.bmenu.menu.MenuLoader;
-import org.by1337.bmenu.menu.MenuSetting;
+import org.by1337.bmenu.menu.*;
 import org.jetbrains.annotations.Nullable;
 
 public class ItemViewerMenu extends Menu {
@@ -23,8 +20,8 @@ public class ItemViewerMenu extends Menu {
         if (setting.getCache() == null) {
             cache = new Cache();
             setting.setCache(cache);
-        } else if (setting.getCache() instanceof Cache cache0) {
-            this.cache = cache0;
+        } else if (setting.getCache() instanceof Cache) {
+            this.cache = (Cache) setting.getCache();
         } else {
             if (!seenIllegalCash) {
                 Main.getMessage().error("Illegal cache type '%s'! Excepted %s", setting.getCache().getClass(), Cache.class);
@@ -33,20 +30,21 @@ public class ItemViewerMenu extends Menu {
             cache = new Cache();
         }
         if (previousMenu != null) {
-            var item = previousMenu.getLastClickedItem();
-            if (item != null && item.getData() instanceof ItemHolder itemHolder) {
+            MenuItem item = previousMenu.getLastClickedItem();
+            if (item != null && item.getData() instanceof ItemHolder) {
+                ItemHolder itemHolder = (ItemHolder) item.getData();
                 data = item.getData();
                 itemStack = itemHolder.getItemStack();
-                if (data instanceof Placeholder placeholder) {
-                    registerPlaceholders(placeholder);
+                if (data instanceof Placeholder) {
+                    registerPlaceholders((Placeholder) data);
                 }
             } else {
                 Menu m = this;
                 while (!(m instanceof ItemHolder) && m != null) {
                     m = m.getPreviousMenu();
                 }
-                if (m instanceof ItemHolder itemHolder) {
-                    itemStack = itemHolder.getItemStack();
+                if (m instanceof ItemHolder) {
+                    itemStack = ((ItemHolder) m).getItemStack();
                 }
                 if (m != null && m != this) {
                     registerPlaceholders(m);
@@ -59,7 +57,7 @@ public class ItemViewerMenu extends Menu {
     protected void generate() {
         if (itemStack != null) {
             customItems.clear();
-            var item = cache.getItem().build(this, itemStack);
+            MenuItem item = cache.getItem().build(this, itemStack);
             item.getItemStack().setAmount(itemStack.getAmount());
             item.setData(data);
             customItems.add(item);

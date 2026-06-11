@@ -17,7 +17,7 @@ public class ConfigUtil {
         if (path.startsWith("/")) {
             path = path.substring(1);
         }
-        var f = new File(Main.getInstance().getDataFolder(), path);
+        File f = new File(Main.getInstance().getDataFolder(), path);
         if (!f.exists()) {
             try {
                 Main.getInstance().saveResource(path, false);

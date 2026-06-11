@@ -1,6 +1,7 @@
 package org.by1337.bauction.search;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Trie {
@@ -27,7 +28,7 @@ public class Trie {
     public List<String> getAllWithPrefix(String prefix) {
         List<String> results = new ArrayList<>();
         TrieNode node = getNodeByPrefix(prefix);
-        if (node == null) return List.of(prefix);
+        if (node == null) return Collections.singletonList(prefix);
         getAllWithPrefixHelper(node, results);
         return results;
     }

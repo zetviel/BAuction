@@ -85,7 +85,7 @@ public class SellItem extends Placeholder implements SerializableToByteArray, It
                 .saleByThePiece(resultSet.getBoolean("sale_by_the_piece"))
                 .tags(
                         new HashSet<>(
-                                Arrays.stream(resultSet.getString("tags").split(",")).filter(s -> !s.isEmpty()).toList()
+                                Arrays.stream(resultSet.getString("tags").split(",")).filter(s -> !s.isEmpty()).collect(java.util.stream.Collectors.toList())
                         )
                 )
                 .timeListedForSale(resultSet.getLong("time_listed_for_sale"))
@@ -94,7 +94,7 @@ public class SellItem extends Placeholder implements SerializableToByteArray, It
                 .amount(resultSet.getInt("amount"))
                 .priceForOne(resultSet.getDouble("price_for_one"))
                 .sellFor(new HashSet<>(
-                                Arrays.stream(resultSet.getString("sell_for").split(",")).filter(s -> !s.isEmpty()).toList()
+                                Arrays.stream(resultSet.getString("sell_for").split(",")).filter(s -> !s.isEmpty()).collect(java.util.stream.Collectors.toList())
                         )
                 )
                 .server(resultSet.getString("server"))
@@ -201,7 +201,7 @@ public class SellItem extends Placeholder implements SerializableToByteArray, It
     }
 
     public SellItem(@NotNull Player seller, @NotNull ItemStack itemStack, double price, long saleDuration, boolean saleByThePiece) {
-        var pair = serializeItemStack(itemStack);
+        Pair<String, Boolean> pair = serializeItemStack(itemStack);
         item = pair.getLeft();
         compressed = pair.getRight();
         sellerName = seller.getName();
@@ -221,7 +221,7 @@ public class SellItem extends Placeholder implements SerializableToByteArray, It
     }
 
     public static Pair<String, Boolean> serializeItemStack(ItemStack itemStack) {
-        var temp = BLib.getApi().getItemStackSerialize().serialize(itemStack);
+        String temp = BLib.getApi().getItemStackSerialize().serialize(itemStack);
         if (temp.getBytes().length > Main.getCfg().getCompressIfMoreThan()) {
             return Pair.of(BLib.getApi().getItemStackSerialize().serializeAndCompress(itemStack), true);
         } else {
@@ -230,7 +230,7 @@ public class SellItem extends Placeholder implements SerializableToByteArray, It
     }
 
     public SellItem(String sellerName, UUID sellerUuid, @NotNull ItemStack itemStack, double price, long saleDuration, boolean saleByThePiece) {
-        var pair = serializeItemStack(itemStack);
+        Pair<String, Boolean> pair = serializeItemStack(itemStack);
         item = pair.getLeft();
         compressed = pair.getRight();
         this.sellerName = sellerName;

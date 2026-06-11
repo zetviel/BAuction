@@ -454,7 +454,7 @@ public class FileDataBase extends DataBaseCore implements Listener {
         Collection<? extends User> users = getAllUsers();
         Collection<? extends UnsoldItem> unsoldItems = getAllUnsoldItems();
 
-        for (File file : List.of(fItems, fUsers, fUnsoldItems)) {
+        for (File file : Arrays.asList(fItems, fUsers, fUnsoldItems)) {
             if (!file.exists()) {
                 file.createNewFile();
             } else {

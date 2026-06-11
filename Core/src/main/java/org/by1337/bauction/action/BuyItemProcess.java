@@ -62,7 +62,8 @@ public class BuyItemProcess extends Placeholder {
             OfflinePlayer seller = Bukkit.getOfflinePlayer(buyingItem.getSellerUuid());
             if (event.isValid()) {
                 Main.getEcon().withdrawPlayer(player, buyingItem.getPrice());
-                if (!buyingItem.getServer().equals(Main.getServerId()) && Main.getStorage() instanceof MysqlDb mysqlDb) {
+                if (!buyingItem.getServer().equals(Main.getServerId()) && Main.getStorage() instanceof MysqlDb) {
+                    MysqlDb mysqlDb = (MysqlDb) Main.getStorage();
                     mysqlDb.getMoneyGiver().give(buyingItem.getPrice(), buyingItem.getSellerUuid(), buyingItem.getServer());
                 } else {
                     Main.getEcon().depositPlayer(seller, buyingItem.getPrice());
@@ -71,7 +72,8 @@ public class BuyItemProcess extends Placeholder {
                     //Main.getMessage().sendMsg(seller.getPlayer(), replace(Lang.getMessage("item_sold_to_buyer")));
                     Event event1 = new Event(seller.getPlayer(), EventType.BUY_ITEM_TO_SELLER, new MultiPlaceholder(buyingItem, buyer, this));
                     Main.getEventManager().onEvent(event1);
-                } else if (Main.getStorage() instanceof MysqlDb mysqlDb) {
+                } else if (Main.getStorage() instanceof MysqlDb) {
+//                    MysqlDb mysqlDb = (MysqlDb) Main.getStorage();
 //                    mysqlDb.getPacketConnection().saveSend(new PacketSendMessage(
 //                            replace(Lang.getMessage("item_sold_to_buyer")), buyingItem.getSellerUuid() // todo
 //                    ));

@@ -6,16 +6,17 @@ import org.by1337.blib.util.collection.ImmutableArrayList;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
 public enum RequirementType {
-    MATH("math", MathRequirement::new, MathRequirement::new, List.of("m")),
-    STRING_EQUALS("string equals", StringEqualsRequirement::new, StringEqualsRequirement::new, List.of("se")),
-    STRING_EQUALS_IGNORE_CASE("string equals ignorecase", StringEqualsIgnoreCaseRequirement::new, StringEqualsIgnoreCaseRequirement::new, List.of("sei")),
-    STRING_CONTAINS("string contains", StringContainsRequirement::new, StringContainsRequirement::new, List.of("sc")),
-    REGEX_MATCHES_REQUIREMENT("regex matches", RegexMatchesRequirement::new, RegexMatchesRequirement::new, List.of("rm")),
-    HAS_PERMISSION("has permission", HasPermisionRequirement::new, HasPermisionRequirement::new, List.of("hp")),
+    MATH("math", MathRequirement::new, MathRequirement::new, Collections.singletonList("m")),
+    STRING_EQUALS("string equals", StringEqualsRequirement::new, StringEqualsRequirement::new, Collections.singletonList("se")),
+    STRING_EQUALS_IGNORE_CASE("string equals ignorecase", StringEqualsIgnoreCaseRequirement::new, StringEqualsIgnoreCaseRequirement::new, Collections.singletonList("sei")),
+    STRING_CONTAINS("string contains", StringContainsRequirement::new, StringContainsRequirement::new, Collections.singletonList("sc")),
+    REGEX_MATCHES_REQUIREMENT("regex matches", RegexMatchesRequirement::new, RegexMatchesRequirement::new, Collections.singletonList("rm")),
+    HAS_PERMISSION("has permission", HasPermisionRequirement::new, HasPermisionRequirement::new, Collections.singletonList("hp")),
     ;
     public final String id;
     public final Function<YamlContext, Requirement> fromYaml;

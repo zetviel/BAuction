@@ -31,8 +31,8 @@ public class InsertBuilder {
                 sql.append(k);
             }
             sql.append(",");
-            if (v instanceof String s) {
-                values.append(quoteAndEscape(s));
+            if (v instanceof String) {
+                values.append(quoteAndEscape((String) v));
             } else {
                 values.append(v);
             }

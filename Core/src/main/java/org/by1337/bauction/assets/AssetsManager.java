@@ -58,11 +58,11 @@ public class AssetsManager {
                     new File(dataFolder, locale + ".json")
             ).join();
 
-            CompoundTag compoundTag = NBTParser.parseAsCompoundTag(Files.readString(f.toPath(), StandardCharsets.UTF_8));
+            CompoundTag compoundTag = NBTParser.parseAsCompoundTag(new String(Files.readAllBytes(f.toPath()), StandardCharsets.UTF_8));
             if (clear(compoundTag)) {
                 compoundTag.putString("_fixed_", "true");
-                Files.writeString(f.toPath(),
-                        NBTToString.toString(compoundTag, NBTToStringStyle.JSON_STYLE_COMPACT)
+                Files.write(f.toPath(),
+                        NBTToString.toString(compoundTag, NBTToStringStyle.JSON_STYLE_COMPACT).getBytes(StandardCharsets.UTF_8)
                 );
             }
             compoundTag.remove("_fixed_");
@@ -94,7 +94,7 @@ public class AssetsManager {
             }
             if (hasRemoved) {
                 for (String s : compoundTag.getTags().keySet().toArray(new String[0])) {
-                    var data = compoundTag.getAsString(s);
+                    String data = compoundTag.getAsString(s);
                     compoundTag.remove(s);
                     if (s.startsWith("block.minecraft.")) {
                         s = s.substring("block.minecraft.".length());

@@ -61,7 +61,8 @@ public final class PacketType<T extends Packet> {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof PacketType<?> type)) return false;
+        if (!(o instanceof PacketType<?>)) return false;
+        PacketType<?> type = (PacketType<?>) o;
         return id == type.id;
     }
 

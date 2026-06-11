@@ -80,7 +80,8 @@ public class MenuLoader implements Closeable, Listener {
 
     private void resourceLeakDetectorTick() {
         for (RegisteredListener listener : InventoryCloseEvent.getHandlerList().getRegisteredListeners()) {
-            if (listener.getListener() instanceof AsyncClickListener asyncClickListener) {
+            if (listener.getListener() instanceof AsyncClickListener) {
+                AsyncClickListener asyncClickListener = (AsyncClickListener) listener.getListener();
                 boolean isDifferentInventory = !asyncClickListener.getViewer().getOpenInventory().getTopInventory().equals(asyncClickListener.getInventory());
                 boolean isViewerOffline = !asyncClickListener.getViewer().isOnline();
 
@@ -102,20 +103,24 @@ public class MenuLoader implements Closeable, Listener {
 
     @EventHandler
     public void on(InventoryCloseEvent event) {
-        if (event.getPlayer() instanceof Player player)
+        if (event.getPlayer() instanceof Player) {
+            Player player = (Player) event.getPlayer();
             removeAll(player, i -> i.hasItemMeta() && i.getItemMeta().getPersistentDataContainer().has(MenuItemBuilder.MENU_ITEM_KEY, PersistentDataType.INTEGER));
+        }
     }
 
     @EventHandler
     public void on(InventoryOpenEvent event) {
-        if (event.getPlayer() instanceof Player player)
+        if (event.getPlayer() instanceof Player) {
+            Player player = (Player) event.getPlayer();
             removeAll(player, i -> i.hasItemMeta() && i.getItemMeta().getPersistentDataContainer().has(MenuItemBuilder.MENU_ITEM_KEY, PersistentDataType.INTEGER));
+        }
     }
 
     public void removeAll(Player player, Predicate<ItemStack> filter) {
-        var inv = player.getInventory();
+        Inventory inv = player.getInventory();
         for (int i = 0; i < inv.getSize(); i++) {
-            var item = inv.getItem(i);
+            ItemStack item = inv.getItem(i);
             if (item != null && filter.test(item)) {
                 inv.setItem(i, null);
             }

@@ -19,7 +19,7 @@ public class AdapterRequirements implements ClassAdapter<Requirements> {
 
     @Override
     public Requirements deserialize(YamlContext context) {
-        List<Requirement> requirementList = context.getMap("requirements", Requirement.class, new HashMap<>()).values().stream().toList();
+        List<Requirement> requirementList = context.getMap("requirements", Requirement.class, new HashMap<>()).values().stream().collect(java.util.stream.Collectors.toList());
         List<String> denyCommands = Collections.unmodifiableList(context.getList("deny_commands", String.class, new ArrayList<>()));
         return new Requirements(requirementList, denyCommands);
     }

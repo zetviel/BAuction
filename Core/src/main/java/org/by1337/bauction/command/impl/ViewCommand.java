@@ -14,6 +14,7 @@ import org.by1337.blib.command.CommandSyntaxError;
 import org.by1337.blib.command.argument.Argument;
 import org.by1337.blib.command.argument.ArgumentMap;
 import org.by1337.blib.command.requires.RequiresPermission;
+import org.by1337.bmenu.menu.*;
 import org.by1337.bmenu.menu.MenuLoader;
 
 import java.util.*;
@@ -46,8 +47,8 @@ public class ViewCommand extends Command<CommandSender> {
         }
 
         UUID uuid;
-        if (uuid0 instanceof UUID uuid1) {
-            uuid = uuid1;
+        if (uuid0 instanceof UUID) {
+            uuid = (UUID) uuid0;
         } else if (ArgumentOfflinePlayerUUID.isUUID(String.valueOf(uuid0))) {
             uuid = UUID.fromString(String.valueOf(uuid0));
         } else {
@@ -66,11 +67,12 @@ public class ViewCommand extends Command<CommandSender> {
             return;
         }
 
-        var menu = menuLoader.getMenu(openMenu);
+        MenuSetting menu = menuLoader.getMenu(openMenu);
         Objects.requireNonNull(menu, "Menu " + openMenu + " not found!");
 
-        var m = menu.create(senderP, null);
-        if (m instanceof PlayerItemsView playerItemsView) {
+        Menu m = menu.create(senderP, null);
+        if (m instanceof PlayerItemsView) {
+            PlayerItemsView playerItemsView = (PlayerItemsView) m;
             playerItemsView.setUuid(uuid);
             playerItemsView.setName(user.getNickName());
         }
@@ -99,12 +101,12 @@ public class ViewCommand extends Command<CommandSender> {
         @Override
         public List<String> tabCompleter(CommandSender sender, String str) throws CommandSyntaxError {
             Player player = sender instanceof Player ? (Player) sender : null;
-            var list = new ArrayList<>(Arrays.stream(Bukkit.getOnlinePlayers().stream()
-                    .filter(pl -> player == null || player.canSee(pl)).map(Player::getName).toArray(String[]::new)).toList()
+            List<String> list = new ArrayList<>(Arrays.stream(Bukkit.getOnlinePlayers().stream()
+                    .filter(pl -> player == null || player.canSee(pl)).map(Player::getName).toArray(String[]::new)).collect(java.util.stream.Collectors.toList())
             );
             if (str.isEmpty())
                 return list;
-            return list.stream().filter(s -> s.startsWith(str)).toList();
+            return list.stream().filter(s -> s.startsWith(str)).collect(java.util.stream.Collectors.toList());
         }
 
         public static boolean isUUID(String str) {

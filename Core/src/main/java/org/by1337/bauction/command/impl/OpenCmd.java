@@ -12,6 +12,7 @@ import org.by1337.blib.command.argument.ArgumentPlayer;
 import org.by1337.blib.command.argument.ArgumentSetList;
 import org.by1337.blib.command.requires.RequiresPermission;
 import org.by1337.blib.util.NameKey;
+import org.by1337.bmenu.menu.*;
 import org.by1337.bmenu.menu.MenuLoader;
 
 import java.util.Objects;
@@ -26,7 +27,7 @@ public class OpenCmd extends Command<CommandSender> {
         this.menu = menu;
         requires(new RequiresPermission<>("bauc.admin.open"));
         argument(new ArgumentPlayer<>("player"));
-        argument(new ArgumentSetList<>("category", Main.getCfg().getCategoryMap().keySet().stream().map(NameKey::getName).toList()));
+        argument(new ArgumentSetList<>("category", Main.getCfg().getCategoryMap().keySet().stream().map(NameKey::getName).collect(java.util.stream.Collectors.toList())));
         executor(this::execute);
     }
 
@@ -41,10 +42,11 @@ public class OpenCmd extends Command<CommandSender> {
             return;
         }
 
-        var menu = menuLoader.getMenu(this.menu);
+        MenuSetting menu = menuLoader.getMenu(this.menu);
         Objects.requireNonNull(menu, "Menu " + this.menu + " not found!");
-        var m = menu.create(player, null);
-        if (m instanceof HomeMenu homeMenu){
+        Menu m = menu.create(player, null);
+        if (m instanceof HomeMenu){
+            HomeMenu homeMenu = (HomeMenu) m;
             int index = homeMenu.getCategories().indexOf(category);
             if (index == -1) {
                 Main.getMessage().sendMsg(sender, "unknown category %s", categoryS);

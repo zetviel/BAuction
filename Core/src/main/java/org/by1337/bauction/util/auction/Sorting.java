@@ -7,8 +7,46 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Comparator;
 import java.util.Objects;
 
-public record Sorting(SortingType type, String value, String selectedName,
-                      String unselectedName, int priority, NameKey nameKey) implements Comparable<Sorting> {
+public class Sorting implements Comparable<Sorting> {
+    private final SortingType type;
+    private final String value;
+    private final String selectedName;
+    private final String unselectedName;
+    private final int priority;
+    private final NameKey nameKey;
+
+    public Sorting(SortingType type, String value, String selectedName, String unselectedName, int priority, NameKey nameKey) {
+        this.type = type;
+        this.value = value;
+        this.selectedName = selectedName;
+        this.unselectedName = unselectedName;
+        this.priority = priority;
+        this.nameKey = nameKey;
+    }
+
+    public SortingType type() {
+        return type;
+    }
+
+    public String value() {
+        return value;
+    }
+
+    public String selectedName() {
+        return selectedName;
+    }
+
+    public String unselectedName() {
+        return unselectedName;
+    }
+
+    public int priority() {
+        return priority;
+    }
+
+    public NameKey nameKey() {
+        return nameKey;
+    }
 
     @Override
     public int compareTo(@NotNull Sorting o) {
@@ -18,7 +56,8 @@ public record Sorting(SortingType type, String value, String selectedName,
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Sorting sorting)) return false;
+        if (!(o instanceof Sorting)) return false;
+        Sorting sorting = (Sorting) o;
         return priority == sorting.priority && type == sorting.type && Objects.equals(value, sorting.value) && Objects.equals(selectedName, sorting.selectedName) && Objects.equals(unselectedName, sorting.unselectedName) && Objects.equals(nameKey, sorting.nameKey);
     }
 
@@ -40,20 +79,27 @@ public record Sorting(SortingType type, String value, String selectedName,
 
     public Comparator<SellItem> getComparator(){
         if (type == Sorting.SortingType.COMPARE_MAX) {
-            return  switch (value){
-                case "{price}" -> (item, item1) -> Double.compare(item1.getPrice(), item.getPrice());
-                case "{price_for_one}" -> (item, item1) -> Double.compare(item1.getPriceForOne(), item.getPriceForOne());
-                case "{sale_time}" -> (item, item1) -> Double.compare((double) item1.getTimeListedForSale() / 1000, (double) item.getTimeListedForSale() / 1000);
-                default -> throw new IllegalArgumentException("unknown sorting type: " + this);
-            };
+            switch (value){
+                case "{price}":
+                    return (item, item1) -> Double.compare(item1.getPrice(), item.getPrice());
+                case "{price_for_one}":
+                    return (item, item1) -> Double.compare(item1.getPriceForOne(), item.getPriceForOne());
+                case "{sale_time}":
+                    return (item, item1) -> Double.compare((double) item1.getTimeListedForSale() / 1000, (double) item.getTimeListedForSale() / 1000);
+                default:
+                    throw new IllegalArgumentException("unknown sorting type: " + this);
+            }
         } else {
-            return switch (value){
-                case "{price}" -> Comparator.comparingDouble(SellItem::getPrice);
-                case "{price_for_one}" -> Comparator.comparingDouble(SellItem::getPriceForOne);
-                case "{sale_time}" ->
-                        Comparator.comparingDouble((SellItem item) -> (double) item.getTimeListedForSale() / 1000);
-                default -> throw new IllegalArgumentException("unknown sorting type: " + this);
-            };
+            switch (value){
+                case "{price}":
+                    return Comparator.comparingDouble(SellItem::getPrice);
+                case "{price_for_one}":
+                    return Comparator.comparingDouble(SellItem::getPriceForOne);
+                case "{sale_time}":
+                    return Comparator.comparingDouble((SellItem item) -> (double) item.getTimeListedForSale() / 1000);
+                default:
+                    throw new IllegalArgumentException("unknown sorting type: " + this);
+            }
         }
     }
 

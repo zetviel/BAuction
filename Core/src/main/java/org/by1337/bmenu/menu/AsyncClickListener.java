@@ -146,10 +146,10 @@ public abstract class AsyncClickListener extends Placeholder implements Listener
             }
             runManager.run(() -> {
                 try {
-                    if (e instanceof InventoryDragEvent dragEvent) {
-                        onClick(dragEvent);
-                    } else if (e instanceof InventoryClickEvent clickEvent) {
-                        onClick(clickEvent);
+                    if (e instanceof InventoryDragEvent) {
+                        onClick((InventoryDragEvent) e);
+                    } else if (e instanceof InventoryClickEvent) {
+                        onClick((InventoryClickEvent) e);
                     }
                 } catch (Throwable t) {
                     Main.getMessage().error("An error occurred while processing the click!", t);

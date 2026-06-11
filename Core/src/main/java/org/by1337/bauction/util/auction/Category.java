@@ -32,7 +32,8 @@ public class Category implements Comparable<Category> {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Category category)) return false;
+        if (!(o instanceof Category)) return false;
+        Category category = (Category) o;
         return priority == category.priority && Objects.equals(selectedName, category.selectedName) && Objects.equals(unselectedName, category.unselectedName) && Objects.equals(tags, category.tags) && Objects.equals(nameKey, category.nameKey);
     }
 

@@ -71,7 +71,7 @@ public class VersionChecker implements Listener {
             if (code == 200) {
                 try (InputStream inputStream = connection.getInputStream();
                      BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
-                    return String.join("\n", reader.lines().toList());
+                    return String.join("\n", reader.lines().collect(java.util.stream.Collectors.toList()));
                 }
             }
         } catch (IOException ignore) {

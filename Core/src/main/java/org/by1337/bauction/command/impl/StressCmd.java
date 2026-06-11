@@ -11,6 +11,7 @@ import org.by1337.blib.command.argument.ArgumentMap;
 import org.by1337.blib.command.requires.RequiresPermission;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -18,10 +19,10 @@ public class StressCmd extends Command<CommandSender> {
     public StressCmd(String command) {
         super(command);
         requires(new RequiresPermission<>("bauc.admin.debug.stress"));
-        argument(new ArgumentIntegerAllowedMath<>("count", List.of("[count]")));
-        argument(new ArgumentIntegerAllowedMath<>("repeat", List.of("[repeat]")));
-        argument(new ArgumentIntegerAllowedMath<>("cd", List.of("[cd]")));
-        argument(new ArgumentIntegerAllowedMath<>("limit", List.of("[limit]")));
+        argument(new ArgumentIntegerAllowedMath<>("count", Collections.singletonList("[count]")));
+        argument(new ArgumentIntegerAllowedMath<>("repeat", Collections.singletonList("[repeat]")));
+        argument(new ArgumentIntegerAllowedMath<>("cd", Collections.singletonList("[cd]")));
+        argument(new ArgumentIntegerAllowedMath<>("limit", Collections.singletonList("[limit]")));
         executor(this::execute);
     }
 

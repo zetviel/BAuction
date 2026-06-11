@@ -2,30 +2,29 @@ package org.by1337.bauction;
 
 import org.bukkit.Material;
 import org.bukkit.command.defaults.BukkitCommand;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.by1337.blib.Api;
 import org.by1337.blib.BLib;
 import org.by1337.blib.block.replacer.PooledBlockReplacer;
 import org.by1337.blib.chat.util.Message;
 import org.by1337.blib.command.BukkitCommandRegister;
-import org.by1337.blib.command.CommandUtil;
 import org.by1337.blib.factory.PacketEntityFactory;
 import org.by1337.blib.factory.PacketFactory;
-import org.by1337.blib.inventory.FakeTitle;
 import org.by1337.blib.inventory.FakeTitleFactory;
 import org.by1337.blib.inventory.ItemStackSerialize;
 import org.by1337.blib.nbt.ParseCompoundTag;
 import org.by1337.blib.network.clientbound.entity.*;
 import org.by1337.blib.text.ComponentToANSI;
 import org.by1337.blib.text.LegacyConvertor;
+import org.by1337.blib.unsafe.BLibUnsafe;
 import org.by1337.blib.util.AsyncCatcher;
 import org.by1337.blib.world.BLocation;
 import org.by1337.blib.world.entity.BEquipmentSlot;
 import org.by1337.blib.world.entity.PacketEntity;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.mockito.Mockito;
+import org.by1337.blib.registry.RegistryCreator;
+import org.by1337.blib.inventory.InventoryUtil;
 
 import java.io.IOException;
 import java.util.Map;
@@ -40,6 +39,12 @@ public class BLibApi implements Api {
             isSet = true;
         }
     }
+
+    @Override
+    public @NotNull RegistryCreator getRegistryCreator() {
+        return Mockito.mock(RegistryCreator.class);
+    }
+
     @Override
     public @NotNull PacketEntityFactory getPacketEntityFactory() {
         return new PacketEntityFactory() {
@@ -95,25 +100,10 @@ public class BLibApi implements Api {
         };
     }
 
-    @Override
-    public @NotNull CommandUtil getCommandUtil() {
-        return new CommandUtil() {
-            @Override
-            public void summon(@NotNull String s, @NotNull BLocation bLocation, @Nullable String s1) {
-
-            }
-
-            @Override
-            public void tellRaw(@NotNull String s, @NotNull Player player) {
-
-            }
-        };
-    }
 
     @Override
     public @NotNull AsyncCatcher getAsyncCatcher() {
-        return s -> {
-        };
+        return Mockito.mock(AsyncCatcher.class);
     }
 
     @Override
@@ -192,5 +182,15 @@ public class BLibApi implements Api {
     @Override
     public @NotNull PooledBlockReplacer getPooledBlockReplacer() {
         return Mockito.mock(PooledBlockReplacer.class);
+    }
+
+    @Override
+    public @NotNull BLibUnsafe getUnsafe() {
+        return Mockito.mock(BLibUnsafe.class);
+    }
+
+    @Override
+    public @NotNull InventoryUtil getInventoryUtil() {
+        return Mockito.mock(InventoryUtil.class);
     }
 }

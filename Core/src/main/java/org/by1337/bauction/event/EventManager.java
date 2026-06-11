@@ -6,6 +6,7 @@ import org.by1337.bauction.Main;
 import org.by1337.blib.command.Command;
 import org.by1337.blib.command.argument.ArgumentEnumValue;
 import org.by1337.blib.command.argument.ArgumentFloat;
+import org.by1337.blib.command.argument.ArgumentString;
 import org.by1337.blib.command.argument.ArgumentStrings;
 import org.by1337.blib.configuration.YamlContext;
 
@@ -21,8 +22,8 @@ public class EventManager {
     public EventManager(YamlContext context) {
         initCommands();
         context.getMap("listeners", YamlContext.class).forEach((k, v) -> {
-            var event = EventType.valueOf(v.getAsString("event").toUpperCase(Locale.ENGLISH));
-            var commands = v.getList("commands", String.class);
+            EventType event = EventType.valueOf(v.getAsString("event").toUpperCase(Locale.ENGLISH));
+            List<String> commands = v.getList("commands", String.class);
             listenerMap.put(k, new EventListener(event, commands, command));
         });
     }
@@ -40,11 +41,11 @@ public class EventManager {
 
     private void initCommands() {
         command.addSubCommand(new Command<Event>("[SOUND]")
-                .argument(new ArgumentEnumValue<>("sound", Sound.class))
+                .argument(new ArgumentString<>("sound"))
                 .argument(new ArgumentFloat<>("volume"))
                 .argument(new ArgumentFloat<>("pitch"))
                 .executor((event, args) -> {
-                    Sound s = (Sound) args.getOrThrow("sound", "Use: [SOUND] <sound> <?volume> <?pitch>");
+                    Sound s = Sound.valueOf((String) args.getOrThrow("sound", "Use: [SOUND] <sound> <?volume> <?pitch>"));
                     float volume = (float) args.getOrDefault("volume", 1f);
                     float pitch = (float) args.getOrDefault("pitch", 1f);
                     Main.getMessage().sendSound(event.getPlayer(), s, volume, pitch);

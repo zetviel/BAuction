@@ -44,7 +44,7 @@ public class MoneyGiver {
     private void give0(Double count, UUID player, String toServer) {
         if (connection.hasConnection()) {
             int id = counter.getAndIncrement();
-            var packet = new PacketGiveMoneyRequest(
+            PacketGiveMoneyRequest packet = new PacketGiveMoneyRequest(
                     currentServer,
                     toServer,
                     player,
@@ -52,7 +52,7 @@ public class MoneyGiver {
                     id
             );
             connection.saveSend(packet);
-            var callBack = new WaitNotifyCallBack<Status>() {
+            WaitNotifyCallBack<Status> callBack = new WaitNotifyCallBack<Status>() {
                 @Override
                 protected void back0(@Nullable Status value) {
                     if (value != Status.OK) {
@@ -78,7 +78,7 @@ public class MoneyGiver {
 
     private PacketGiveMoneyResponse giveResponse(PacketGiveMoneyResponse packet) {
         if (packet.getTo().equals(currentServer)) {
-            var callBack = waiters.remove(packet.getId());
+            WaitNotifyCallBack<Status> callBack = waiters.remove(packet.getId());
             if (callBack != null) {
                 callBack.back(Status.OK);
             } else {

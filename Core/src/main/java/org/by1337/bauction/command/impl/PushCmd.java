@@ -18,6 +18,7 @@ import org.by1337.blib.command.argument.ArgumentMap;
 import org.by1337.blib.command.argument.ArgumentString;
 import org.by1337.blib.command.requires.RequiresPermission;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -26,9 +27,9 @@ public class PushCmd extends Command<CommandSender> {
     public PushCmd(String command) {
         super(command);
         requires(new RequiresPermission<>("bauc.admin.debug.push"));
-        argument(new ArgumentIntegerAllowedMath<>("price", List.of(Lang.getMessage("price_tag"))));
-        argument(new ArgumentInteger<>("amount", List.of(Lang.getMessage("quantity_tag"))));
-        argument(new ArgumentString<>("time", List.of(Lang.getMessage("sale_time_tag"))));
+        argument(new ArgumentIntegerAllowedMath<>("price", Collections.singletonList(Lang.getMessage("price_tag"))));
+        argument(new ArgumentInteger<>("amount", Collections.singletonList(Lang.getMessage("quantity_tag"))));
+        argument(new ArgumentString<>("time", Collections.singletonList(Lang.getMessage("sale_time_tag"))));
 
         executor(this::execute);
     }
@@ -36,8 +37,9 @@ public class PushCmd extends Command<CommandSender> {
     private void execute(CommandSender sender, ArgumentMap<String, Object> args) throws CommandException {
         int amount = (int) args.getOrDefault("amount", 1);
         int price = (int) args.getOrThrow("price", Lang.getMessage("price_not_specified"));
-        if (!(sender instanceof Player player))
+        if (!(sender instanceof Player))
             throw new CommandException(Lang.getMessage("must_be_player"));
+        Player player = (Player) sender;
 
         ItemStack itemStack = player.getInventory().getItemInMainHand();
         if (itemStack.getType().isAir()) {

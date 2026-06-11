@@ -18,20 +18,21 @@ public class ViewShulkerMenu extends Menu {
     public ViewShulkerMenu(MenuSetting setting, Player player, @Nullable Menu previousMenu, MenuLoader menuLoader) {
         super(setting, player, previousMenu, menuLoader);
         if (previousMenu != null) {
-            var item = previousMenu.getLastClickedItem();
-            if (item != null && item.getData() instanceof ItemHolder itemHolder) {
-                var data = item.getData();
+            MenuItem item = previousMenu.getLastClickedItem();
+            if (item != null && item.getData() instanceof ItemHolder) {
+                ItemHolder itemHolder = (ItemHolder) item.getData();
+                Object data = item.getData();
                 itemStack = itemHolder.getItemStack();
-                if (data instanceof Placeholder placeholder) {
-                    registerPlaceholders(placeholder);
+                if (data instanceof Placeholder) {
+                    registerPlaceholders((Placeholder) data);
                 }
             } else {
                 Menu m = this;
                 while (!(m instanceof ItemHolder) && m != null) {
                     m = m.getPreviousMenu();
                 }
-                if (m instanceof ItemHolder itemHolder) {
-                    itemStack = itemHolder.getItemStack();
+                if (m instanceof ItemHolder) {
+                    itemStack = ((ItemHolder) m).getItemStack();
                 }
                 if (m != null && m != this) {
                     registerPlaceholders(m);
@@ -43,10 +44,12 @@ public class ViewShulkerMenu extends Menu {
     @Override
     protected void generate() {
         customItems.clear();
-        if (itemStack != null && itemStack.getItemMeta() instanceof BlockStateMeta blockStateMeta){
-            if (blockStateMeta.hasBlockState() && blockStateMeta.getBlockState() instanceof ShulkerBox shulkerBox){
+        if (itemStack != null && itemStack.getItemMeta() instanceof BlockStateMeta){
+            BlockStateMeta blockStateMeta = (BlockStateMeta) itemStack.getItemMeta();
+            if (blockStateMeta.hasBlockState() && blockStateMeta.getBlockState() instanceof ShulkerBox){
+                ShulkerBox shulkerBox = (ShulkerBox) blockStateMeta.getBlockState();
                 for (int i = 0; i < 27; i++) {
-                    var item = shulkerBox.getInventory().getItem(i);
+                    ItemStack item = shulkerBox.getInventory().getItem(i);
                     if (item == null) continue;
                     MenuItem menuItem = new MenuItem(new int[]{i}, item, Collections.emptyMap(), this, null);
                     customItems.add(menuItem);

@@ -8,7 +8,7 @@ import java.io.IOException;
 public class DbCfg109 {
 
     public void run() throws IOException, InvalidConfigurationException {
-        var cfg = ConfigUtil.load("dbCfg.yml");
+        org.by1337.blib.configuration.YamlConfig cfg = ConfigUtil.load("dbCfg.yml");
         cfg.set("server-id", "server-1");
         cfg.trySave();
     }

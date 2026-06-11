@@ -70,16 +70,24 @@ public class NumberUtil {
         return out;
     }
     private static long getResult(int x, String s){
-        return switch (s) {
-            case "s" -> 1000L * x;
-            case "m" -> 60000L * x;
-            case "h" -> 3600000L * x;
-            case "d" -> 86400000L * x;
-            case "w" -> 604800000L * x;
-            case "mo" -> 2629746000L * x;
-            case "y" -> 31556908800L * x;
-            default -> 0;
-        };
+        switch (s) {
+            case "s":
+                return 1000L * x;
+            case "m":
+                return 60000L * x;
+            case "h":
+                return 3600000L * x;
+            case "d":
+                return 86400000L * x;
+            case "w":
+                return 604800000L * x;
+            case "mo":
+                return 2629746000L * x;
+            case "y":
+                return 31556908800L * x;
+            default:
+                return 0;
+        }
     }
 
     public static boolean isDouble(String num) {

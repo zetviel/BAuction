@@ -9,6 +9,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 public class AssetsDownloader {
     public static final String SITE = "https://raw.githubusercontent.com/InventivetalentDev/minecraft-assets";
@@ -19,7 +20,7 @@ public class AssetsDownloader {
             if (saveTo.exists()) return saveTo;
             String data = parsePage(fullUrl);
             try {
-                Files.writeString(saveTo.toPath(), data, StandardCharsets.UTF_8);
+                Files.write(saveTo.toPath(), data.getBytes(StandardCharsets.UTF_8));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -41,7 +42,7 @@ public class AssetsDownloader {
             if (code == 200) {
                 try (InputStream inputStream = connection.getInputStream();
                      BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
-                    return String.join("\n", reader.lines().toList());
+                    return String.join("\n", reader.lines().collect(Collectors.toList()));
                 }
             }
             throw new IOException("code: " + code + " Url: " + url);

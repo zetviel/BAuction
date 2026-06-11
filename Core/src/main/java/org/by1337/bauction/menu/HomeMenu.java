@@ -41,8 +41,8 @@ public class HomeMenu extends Menu {
         if (setting.getCache() == null) {
             cache = new Cache();
             setting.setCache(cache);
-        } else if (setting.getCache() instanceof Cache cache0) {
-            this.cache = cache0;
+        } else if (setting.getCache() instanceof Cache) {
+            this.cache = (Cache) setting.getCache();
         } else {
             if (!seenIllegalCash) {
                 Main.getMessage().error("Illegal cache type '%s'! Excepted %s", setting.getCache().getClass(), Cache.class);
@@ -86,11 +86,11 @@ public class HomeMenu extends Menu {
                 }
                 MenuItem menuItem = menuItemBuilder.build(this, item.getItemStack(), item);
                 if (ItemUtil.isShulker(item.getMaterial())) {
-                    var toAdd = cache.getIfShulker();
+                    MenuItemBuilder toAdd = cache.getIfShulker();
                     menuItem.getItemStack().editMeta(m -> {
-                        var lore = new ArrayList<>(Objects.requireNonNullElse(m.lore(), Collections.emptyList()));
+                        List<net.kyori.adventure.text.Component> lore = new ArrayList<>(Objects.requireNonNullElse(m.lore(), Collections.emptyList()));
                         lore.addAll(toAdd.getLore().stream().map(s ->
-                                Main.getMessage().componentBuilder(item.replace(s)).decoration(TextDecoration.ITALIC, false)).toList());
+                                Main.getMessage().componentBuilder(item.replace(s)).decoration(TextDecoration.ITALIC, false)).collect(java.util.stream.Collectors.toList()));
                         m.lore(lore);
                     });
                     if (!toAdd.getClicks().isEmpty()) {
@@ -105,11 +105,11 @@ public class HomeMenu extends Menu {
 
                 }
                 if (viewer.hasPermission("bauc.admin") && !item.getSellerUuid().equals(user.getUuid())) {
-                    var toAdd = cache.getIfAdmin();
+                    MenuItemBuilder toAdd = cache.getIfAdmin();
                     menuItem.getItemStack().editMeta(m -> {
-                        var lore = new ArrayList<>(Objects.requireNonNullElse(m.lore(), Collections.emptyList()));
+                        List<net.kyori.adventure.text.Component> lore = new ArrayList<>(Objects.requireNonNullElse(m.lore(), Collections.emptyList()));
                         lore.addAll(toAdd.getLore().stream().map(s ->
-                                Main.getMessage().componentBuilder(item.replace(s)).decoration(TextDecoration.ITALIC, false)).toList());
+                                Main.getMessage().componentBuilder(item.replace(s)).decoration(TextDecoration.ITALIC, false)).collect(java.util.stream.Collectors.toList()));
                         m.lore(lore);
                     });
                     if (!toAdd.getClicks().isEmpty()) {
@@ -278,8 +278,9 @@ public class HomeMenu extends Menu {
                 new Command<HomeMenu>("[FIND_ANALOGS]")
                         .argument(new ArgumentBoolean<>("soft"))
                         .executor((menu, args) -> {
-                            if (menu.getLastClickedItem() == null || !(menu.getLastClickedItem().getData() instanceof SellItem sellItem))
+                            if (menu.getLastClickedItem() == null || !(menu.getLastClickedItem().getData() instanceof SellItem))
                                 throw new CommandException("Clicked item is not sell item!");
+                            SellItem sellItem = (SellItem) menu.getLastClickedItem().getData();
                             boolean soft = (boolean) args.getOrDefault("soft", false);
 
                             Category custom = Main.getCfg().getSorting().getAs("special.search", Category.class);

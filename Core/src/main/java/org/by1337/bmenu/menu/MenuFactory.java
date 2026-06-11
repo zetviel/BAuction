@@ -14,7 +14,7 @@ import java.util.Objects;
 public class MenuFactory {
 
     public static MenuSetting create(YamlContext context, MenuLoader loader) {
-        List<MenuItemBuilder> items = context.getMap("items", MenuItemBuilder.class).values().stream().sorted().toList();
+        List<MenuItemBuilder> items = context.getMap("items", MenuItemBuilder.class).values().stream().sorted().collect(java.util.stream.Collectors.toList());
         String title = context.getAsString("menu_title");
         int size = context.getAsInteger("size");
         if (size % 9 != 0) {

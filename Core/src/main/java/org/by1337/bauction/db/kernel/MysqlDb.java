@@ -54,56 +54,46 @@ public class MysqlDb extends FileDataBase implements PacketListener {
 
         String[] createTableStatements = {
                 //<editor-fold desc="create tables sqls" defaultstate="collapsed">
-                """
-CREATE TABLE IF NOT EXISTS give_money (server VARBINARY(36) NOT NULL, uuid VARCHAR(36) NOT NULL, count DOUBLE NOT NULL)
-""",
-                """
-CREATE TABLE IF NOT EXISTS unsold_items (
-  uuid VARBINARY(36) NOT NULL PRIMARY KEY,
-  seller_uuid VARCHAR(36) NOT NULL,
-  item TEXT NOT NULL,
-  delete_via BIGINT NOT NULL,
-  expired BIGINT NOT NULL,
-  compressed BOOLEAN NOT NULL
-)
-""",
-                """
-CREATE TABLE IF NOT EXISTS sell_items (
-  uuid VARBINARY(36) NOT NULL PRIMARY KEY,
-  seller_uuid VARCHAR(36) NOT NULL,
-  item TEXT NOT NULL,
-  seller_name VARCHAR(50) NOT NULL,
-  price DOUBLE NOT NULL,
-  sale_by_the_piece BOOLEAN NOT NULL,
-  tags TEXT NOT NULL,
-  time_listed_for_sale BIGINT NOT NULL,
-  removal_date BIGINT NOT NULL,
-  material VARCHAR(50) NOT NULL,
-  amount TINYINT NOT NULL,
-  price_for_one DOUBLE NOT NULL,
-  sell_for TEXT NOT NULL,
-  server VARBINARY(36) NOT NULL,
-  compressed BOOLEAN NOT NULL
-)
-""",
-                """
-CREATE TABLE IF NOT EXISTS users (
-  uuid VARBINARY(36) NOT NULL PRIMARY KEY,
-  name VARCHAR(50) NOT NULL,
-  deal_count INT NOT NULL,
-  deal_sum DOUBLE NOT NULL
-)
-""",
-                """
-CREATE TABLE IF NOT EXISTS logs (
-  time BIGINT NOT NULL,
-  type VARCHAR(20) NOT NULL,
-  owner VARCHAR(36) NOT NULL,
-  server VARCHAR(36) NOT NULL,
-  uuid VARCHAR(36),
-  INDEX idx_time (time)
-)
-"""
+                "CREATE TABLE IF NOT EXISTS give_money (server VARBINARY(36) NOT NULL, uuid VARCHAR(36) NOT NULL, count DOUBLE NOT NULL)",
+                "CREATE TABLE IF NOT EXISTS unsold_items (\n" +
+                "  uuid VARBINARY(36) NOT NULL PRIMARY KEY,\n" +
+                "  seller_uuid VARCHAR(36) NOT NULL,\n" +
+                "  item TEXT NOT NULL,\n" +
+                "  delete_via BIGINT NOT NULL,\n" +
+                "  expired BIGINT NOT NULL,\n" +
+                "  compressed BOOLEAN NOT NULL\n" +
+                ")",
+                "CREATE TABLE IF NOT EXISTS sell_items (\n" +
+                "  uuid VARBINARY(36) NOT NULL PRIMARY KEY,\n" +
+                "  seller_uuid VARCHAR(36) NOT NULL,\n" +
+                "  item TEXT NOT NULL,\n" +
+                "  seller_name VARCHAR(50) NOT NULL,\n" +
+                "  price DOUBLE NOT NULL,\n" +
+                "  sale_by_the_piece BOOLEAN NOT NULL,\n" +
+                "  tags TEXT NOT NULL,\n" +
+                "  time_listed_for_sale BIGINT NOT NULL,\n" +
+                "  removal_date BIGINT NOT NULL,\n" +
+                "  material VARCHAR(50) NOT NULL,\n" +
+                "  amount TINYINT NOT NULL,\n" +
+                "  price_for_one DOUBLE NOT NULL,\n" +
+                "  sell_for TEXT NOT NULL,\n" +
+                "  server VARBINARY(36) NOT NULL,\n" +
+                "  compressed BOOLEAN NOT NULL\n" +
+                ")",
+                "CREATE TABLE IF NOT EXISTS users (\n" +
+                "  uuid VARBINARY(36) NOT NULL PRIMARY KEY,\n" +
+                "  name VARCHAR(50) NOT NULL,\n" +
+                "  deal_count INT NOT NULL,\n" +
+                "  deal_sum DOUBLE NOT NULL\n" +
+                ")",
+                "CREATE TABLE IF NOT EXISTS logs (\n" +
+                "  time BIGINT NOT NULL,\n" +
+                "  type VARCHAR(20) NOT NULL,\n" +
+                "  owner VARCHAR(36) NOT NULL,\n" +
+                "  server VARCHAR(36) NOT NULL,\n" +
+                "  uuid VARCHAR(36),\n" +
+                "  INDEX idx_time (time)\n" +
+                ")"
                 //</editor-fold>
         };
         for (String sql : createTableStatements) {
@@ -375,7 +365,7 @@ CREATE TABLE IF NOT EXISTS logs (
         for (Action action : actions) {
             try {
                 switch (action.getType()) {
-                    case ADD_SELL_ITEM -> {
+                    case ADD_SELL_ITEM:
                         if (hasSellItem(action.getItem())) {
                             break;
                         }
@@ -385,8 +375,8 @@ CREATE TABLE IF NOT EXISTS logs (
                             SellItem sellItem = SellItem.fromResultSet(resultSet);
                             writeLock(() -> addSellItem0(sellItem));
                         }
-                    }
-                    case UPDATE_USER -> {
+                        break;
+                    case UPDATE_USER:
                         try (PreparedStatement preparedStatement = connection.prepareStatement(String.format("SELECT * FROM users WHERE uuid = '%s'", action.getOwner()));
                              ResultSet resultSet = preparedStatement.executeQuery()) {
                             if (!resultSet.next()) break;
@@ -398,8 +388,8 @@ CREATE TABLE IF NOT EXISTS logs (
                             }
                             boostCheck(user.uuid);
                         }
-                    }
-                    case ADD_UNSOLD_ITEM -> {
+                        break;
+                    case ADD_UNSOLD_ITEM:
                         if (hasUnsoldItem(action.getItem())) break;
                         try (PreparedStatement preparedStatement = connection.prepareStatement(String.format("SELECT * FROM unsold_items WHERE uuid = '%s'", action.getItem().getKey()));
                              ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -407,15 +397,15 @@ CREATE TABLE IF NOT EXISTS logs (
                             UnsoldItem unsoldItem = UnsoldItem.fromResultSet(resultSet);
                             writeLock(() -> addUnsoldItem0(unsoldItem));
                         }
-                    }
-                    case REMOVE_SELL_ITEM -> {
+                        break;
+                    case REMOVE_SELL_ITEM:
                         if (!hasSellItem(action.getItem())) break;
                         super.removeSellItem(action.getItem());
-                    }
-                    case REMOVE_UNSOLD_ITEM -> {
+                        break;
+                    case REMOVE_UNSOLD_ITEM:
                         if (!hasUnsoldItem(action.getItem())) break;
                         super.removeUnsoldItem(action.getItem());
-                    }
+                        break;
                 }
             } catch (SQLException e) {
                 Main.getMessage().error("failed to apply log '%s'", e, action);
